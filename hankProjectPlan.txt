@@ -1,0 +1,59 @@
+1. GIT 
+  - Create github account.
+  - Create a git repository (Project) and link it to a new project on your local workstation.
+  - try to write some code and make a commit, and push it to the master branch. 
+
+git clone https://github.com/jajayongjia/test.git 
+
+
+git command:
+
+1. git status （检查当前的git状态）
+2. git add -A  (把当前本地所有的changes打包到一个package里面)
+3. git commit -a -m "comment" （把package里的所有changes保存下来 并且attach上comment）
+4. git push (把已经commit的内容 发送到github上面)
+
+
+
+
+
+2.Planning Analysis: 
+
+  - user? 
+  - 目的？ 帮助教授更好的完成课上点名
+  - meeting schedule? once a week
+  - Meeting note: 
+  - timeline:  Sept - Oct ??? 
+
+               10 - 11 ?
+               11- 12? 
+
+               12 release? 
+  - maintenance plan    
+
+
+3. Design:
+
+   - UI ? 
+   - User process? ex. User enters 1 on xxx UI --- > display ??? message 
+
+   - user requirements? 
+      1. Funtional requirements?  this program supports random selecting 5 from 200 student.
+      2. Non-functional requirements? takes less than 1 sec to respond each user input. 
+
+
+
+
+
+ 4. Development: 
+     - understand python and mysql.   
+
+
+
+       
+
+ 5. Testing:
+     -
+
+ 6. Maintenance: 
+     - maintenance plan         
