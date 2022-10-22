@@ -1,3 +1,4 @@
+import classes
 
 from mysql.connector import (connection)
 ATTANDANCE = 'ATTANDANCE'
@@ -18,8 +19,9 @@ def register():
     userNameList = []
     userIdList = []
     for row in myresult:
-        userNameList.append(row[1])
         userIdList.append(row[0])
+        userNameList.append(row[1])
+        
    
     Username = input("Create username:")
     Password = input("Create password:")
@@ -29,7 +31,7 @@ def register():
         print("Passwords don't match, please try again")
         register()
     else:
-        if len(Password)<=8:
+        if len(Password)<8:
             print("Your password should be at least 8 digits, please enter aonther password")
             register()
         elif Username in userNameList:
@@ -77,9 +79,6 @@ def home(option=None):
 home()
 
         
-        
-
-
 
 
 def firstPage(allMenu):
@@ -136,16 +135,3 @@ cnx.close()
 
 
 
-
-
-#professorUsernamePasswordQuery = "select username and password from uniproject.menu"
-#cursor = cnx.cursor()
-#cursor.execute(professorUsernamePasswordQuery)
-  # get all records
-#professorInfo = cursor.fetchall()   
-#professorUsername = []
-#professorPassword = []
-#for row in professorInfo:
-    #professorUsername.append(row[3])
-    #professorPassword.append(row[4])
-#data = dict()
