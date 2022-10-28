@@ -45,7 +45,7 @@ class Student(db.Model):
 class Course(db.Model):
     id = db.Column('course_id', db.Integer, nullable=False, primary_key=True)
     courseName = db.Column(db.String(20), unique=True, nullable=False)
-    professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'))
+    professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'), nullable=False)
     
     def __init__(self,courseName,professor_id):
         self.courseName = courseName
@@ -53,28 +53,61 @@ class Course(db.Model):
         return f'<Course "{self.courseName}">'
     
     
-def update_professor(firstName, lastName, userName, password):
+def update_professor():
     from classes import Professor
     from classes import db
-    data = Professor('firstName', 'lastName', 'userName, 'password') 
+    update = Student.query.filter_by(id=db.Integer).first()
+    update.userName = 'newusername'
+    db.session.commit()
+    update.password = 'newpassword'
+    db.session.commit()
     
-def insert_professor():
-    pass
-
+def insert_professor(self,firstName,lastNme,userName,password):
+    from classes import Professor
+    from classes import db
+    data = Professor('firstName', 'lastName', 'userName', 'password',)     
+    db.session.add(data)
+    db.seesion.commit()
+    
+    
 def update_student():
-    pass
-
-def insert_student():
-    pass
+    from classes import Student
+    from classes import db
+    update = Student.query.filter_by(id=db.Integer).first()
+    update.userName = 'newusername'
+    db.session.commit()
+    update.password = 'newpassword'
+    db.session.commit()
+    
+    
+def insert_student(self,firstName,lastNme,userName,password):
+    from classes import Student
+    from classes import db
+    data = Student('firstName', 'lastName', 'userName', 'password')     
+    db.session.add(data)
+    db.seesion.commit()
 
 def update_course():
-    pass
+    from classes import Course
+    from classes import db
+    update = Student.query.filter_by(id=db.Integer).first()
+    update.courseName = 'newcoursename'
+    db.session.commit()
 
-def insert_coourse():
-    pass
+def insert_course(self,courseName):
+    from classes import Course
+    from classes import db
+    data = Course('courseName')     
+    db.session.add(data)
+    db.seesion.commit()
 
 
 
+def take_attandence():
+    from classes import Student
+    from classes import db    
+    
+    
 
         #def changePassword(self,newPassword):
             #self.password = newPassword
@@ -87,3 +120,8 @@ def insert_coourse():
         #p1.changePassword('def')
             
         #print(p1.password)        
+    
+    #from classes import Student
+    #from classes import db
+    #data = Student('id', 'firstName', 'lastName')
+    
