@@ -5,7 +5,7 @@ import pymysql
 user='root' 
 password='hankang0603'
 host='127.0.0.1'
-database='MySQL'
+database='uniproject'
 
 app= Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+user+':'+password+'@'+host+"/"+database
@@ -26,14 +26,15 @@ class Professor(db.Model):
         self.lastName = lastName
         self.userName = userName
         self.password = password            
-        return f'<Professor "{self.firstName}">'
+    def __repr__(self):
+        return f'<Professor "{self.firstName + self.lastName}">'
         
-  
+ # work 
 class Student(db.Model):
     id = db.Column('student_id', db.Integer, nullable=False, primary_key = True)
-    firstName =  db.Column(db.String(20), nullable=False)
-    lastName = db.Column(db.String(20), nullable=False)
-    userName = db.Column(db.String(20), unique=True, nullable=False)
+    firstName =  db.Column('first_name',db.String(20), nullable=False)
+    lastName = db.Column('last_name',db.String(20), nullable=False)
+    userName = db.Column('username',db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
     
     def __init__(self,firstName,lastName,userName,password):
@@ -41,87 +42,53 @@ class Student(db.Model):
         self.lastName = lastName
         self.userName = userName
         self.password = password
-        
+    def __repr__(self):
+        return f'<Student "{self.firstName + self.lastName}">'        
 class Course(db.Model):
     id = db.Column('course_id', db.Integer, nullable=False, primary_key=True)
     courseName = db.Column(db.String(20), unique=True, nullable=False)
-    professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'), nullable=False)
+    professor_id = db.Column(db.Integer, db.ForeignKey('professor.professor_id'), nullable=False)
     
     def __init__(self,courseName,professor_id):
         self.courseName = courseName
         self.professor_id = professor_id
-        return f'<Course "{self.courseName}">'
-    
+    def __repr__(self):
+        return f'<Course "{self.courseName}">'     
     
 def update_professor():
-    from classes import Professor
-    from classes import db
     update = Student.query.filter_by(id=db.Integer).first()
     update.userName = 'newusername'
-    db.session.commit()
     update.password = 'newpassword'
     db.session.commit()
     
-def insert_professor(self,firstName,lastNme,userName,password):
-    from classes import Professor
-    from classes import db
+def insert_professor(firstName,lastNme,userName,password):
     data = Professor('firstName', 'lastName', 'userName', 'password',)     
     db.session.add(data)
     db.seesion.commit()
     
-    
-def update_student():
-    from classes import Student
-    from classes import db
-    update = Student.query.filter_by(id=db.Integer).first()
-    update.userName = 'newusername'
-    db.session.commit()
-    update.password = 'newpassword'
+   
+   # work 
+def update_student(firstName,studentId):
+    update = Student.query.filter_by(id=studentId).first()
+  
+    update.firstName =firstName
     db.session.commit()
     
-    
-def insert_student(self,firstName,lastNme,userName,password):
-    from classes import Student
-    from classes import db
-    data = Student('firstName', 'lastName', 'userName', 'password')     
+    # work
+def insert_student(firstName,lastName,userName,password):
+    data = Student(firstName, lastName, userName,password)     
     db.session.add(data)
-    db.seesion.commit()
+    db.session.commit()
 
 def update_course():
-    from classes import Course
-    from classes import db
     update = Student.query.filter_by(id=db.Integer).first()
     update.courseName = 'newcoursename'
     db.session.commit()
 
-def insert_course(self,courseName):
-    from classes import Course
-    from classes import db
+def insert_course(courseName):
     data = Course('courseName')     
     db.session.add(data)
     db.seesion.commit()
 
 
-
-def take_attandence():
-    from classes import Student
-    from classes import db    
-    
-    
-
-        #def changePassword(self,newPassword):
-            #self.password = newPassword
-                
-        
-        #p1 = professor('abcf','abcl','abcu','abcp')
-        #p2 = professor('2abcf','2abcl','2abcu','2abcp')
-            
-        #print(p1.password)
-        #p1.changePassword('def')
-            
-        #print(p1.password)        
-    
-    #from classes import Student
-    #from classes import db
-    #data = Student('id', 'firstName', 'lastName')
     

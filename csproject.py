@@ -1,5 +1,6 @@
-import classes
 
+from classes import *
+import random
 from mysql.connector import (connection)
 ATTANDANCE = 'ATTANDANCE'
 REVIEW_CHART = 'REVIEW_CHART'
@@ -19,9 +20,8 @@ def register():
     userNameList = []
     userIdList = []
     for row in myresult:
-        userIdList.append(row[0])
         userNameList.append(row[1])
-        
+        userIdList.append(row[0])
    
     Username = input("Create username:")
     Password = input("Create password:")
@@ -39,7 +39,7 @@ def register():
             register()
         else: 
             createNewUserQuery = "INSERT INTO uniproject.professor (professor_id, first_name, last_name, username, password) VALUES({0},'{1}','{2}','{3}','{4}');"
-            createNewUserQuery = createNewUserQuery.format(max(userIdList)+1,'aa','bb',Username,Password)
+            createNewUserQuery = createNewUserQuery.format(max(userIdList)+1,'aa','bb',Username,Password) #let the newuser enter the firstName and lastName then create username n password. so createNewUserQuery.format(max(userIdList)+1,'first_name','last_name',Username,Password)
             mycursor = cnx.cursor()
             mycursor.execute(createNewUserQuery)
             cnx.commit()
@@ -76,9 +76,12 @@ def home(option=None):
         register()
     else:
         print("Please enter an option")
-home()
+
 
         
+        
+
+
 
 
 def firstPage(allMenu):
@@ -90,48 +93,75 @@ def firstPage(allMenu):
    
     return userInput
    
-   
-
-   
-menuIdQuery = "select * from uniproject.menu"
-cursor = cnx.cursor()
-cursor.execute(menuIdQuery)
-    # get all records
-allMenuInfo = cursor.fetchall()   
-menuIdList = []
-menuOption = []
-menuAcronym = []
-for row in allMenuInfo:
-    menuIdList.append(row[0])
-    menuAcronym.append(row[2])
-    menuOption.append(str(row[0])+'. ' + row[1])
+with app.app_context():
+    # select all 
+    #students = Student.query.all()
+    # random pick
+    #pickedStudents = random.sample(students,k=3)
+    #for stu in pickedStudents:
+        #print(stu.userName)
+        
+    # select one  search by
+    hank = Student.query.filter_by(firstName='firstName').first()
+    #print(hank.userName)
+    # insert new 
+    insert_student('aaa','aaa','aaa','aaa')
+    #update
+    update_student('bbb',hank.id)
+    
+#home()
+#menuIdQuery = "select * from uniproject.menu"
+#cursor = cnx.cursor()
+#cursor.execute(menuIdQuery)
+    ## get all records
+#allMenuInfo = cursor.fetchall()   
+#menuIdList = []
+#menuOption = []
+#menuAcronym = []
+#for row in allMenuInfo:
+    #menuIdList.append(row[0])
+    #menuAcronym.append(row[2])
+    #menuOption.append(str(row[0])+'. ' + row[1])
     
    
-userInput1 = ''  
-while (not userInput1.isnumeric())  or (int(userInput1) not in menuIdList):
-    if userInput1!='':
-        print('Invaild option')
-    userInput1 = firstPage(menuOption)
+#userInput1 = ''  
+#while (not userInput1.isnumeric())  or (int(userInput1) not in menuIdList):
+    #if userInput1!='':
+        #print('Invaild option')
+    #userInput1 = firstPage(menuOption)
 
-inputIndex = menuIdList.index(int(userInput1))
-if menuAcronym[inputIndex] == ATTANDANCE:
-   #do userInput 1 stuff
-   print('userInput 1 has been called')
+#inputIndex = menuIdList.index(int(userInput1))
+#if menuAcronym[inputIndex] == ATTANDANCE:
+   ##do userInput 1 stuff
+   #print('userInput 1 has been called')
    
-elif menuAcronym[inputIndex] == REVIEW_CHART:
-   #do userInput 2 stuff
-   print('userInput 2 has been called')
+#elif menuAcronym[inputIndex] == REVIEW_CHART:
+   ##do userInput 2 stuff
+   #print('userInput 2 has been called')
    
-elif menuAcronym[inputIndex] == S_COURSE_SCORE:
-   #do userInput 3 stuff
-   print('userInput 3 has been called')
+#elif menuAcronym[inputIndex] == S_COURSE_SCORE:
+   ##do userInput 3 stuff
+   #print('userInput 3 has been called')
  
    
    
    
    
-cnx.close()
+#cnx.close()
 
 
 
 
+
+
+#professorUsernamePasswordQuery = "select username and password from uniproject.menu"
+#cursor = cnx.cursor()
+#cursor.execute(professorUsernamePasswordQuery)
+  # get all records
+#professorInfo = cursor.fetchall()   
+#professorUsername = []
+#professorPassword = []
+#for row in professorInfo:
+    #professorUsername.append(row[3])
+    #professorPassword.append(row[4])
+#data = dict()
