@@ -3,71 +3,109 @@ from classes import *
 import random
 from mysql.connector import (connection)
 ATTANDANCE = 'ATTANDANCE'
-REVIEW_CHART = 'REVIEW_CHART'
-S_COURSE_SCORE = 'S_COURSE_SCORE'
+REVIEW_CHART = 'REVIEW_CHART' 
 
 cnx = connection.MySQLConnection(user='root', password='hankang0603',
                                  host='127.0.0.1',
                                  database='MySQL')
 
-
-def register():
-
-    professorUsernamePasswordQuery = "select professor_id, username from uniproject.professor"
-    mycursor = cnx.cursor()
-    mycursor.execute(professorUsernamePasswordQuery)
-    myresult = mycursor.fetchall()
-    userNameList = []
-    userIdList = []
-    for row in myresult:
-        userNameList.append(row[1])
-        userIdList.append(row[0])
-   
+#add register ur first and last name
+def register(): 
+    Firstname = input("Enter your firstname:")
+    Lastname = input("Enter your lastname:")
     Username = input("Create username:")
     Password = input("Create password:")
-    Password1 = input("Comfirm password:")
-    
-    if  Password1 != Password:
-        print("Passwords don't match, please try again")
-        register()
-    else:
-        if len(Password)<8:
+    Password1 = input("Comfirm password:")    
+    with app.app_context():     
+        if  Password1 != Password:
+            print("Passwords don't match, please try again")
+            register()
+        elif len(Password)<8:
             print("Your password should be at least 8 digits, please enter aonther password")
             register()
-        elif Username in userNameList:
+ 
+        elif Professor.query.filter_by(userName=Username).first() is not None:
             print("Username exists")
-            register()
-        else: 
-            createNewUserQuery = "INSERT INTO uniproject.professor (professor_id, first_name, last_name, username, password) VALUES({0},'{1}','{2}','{3}','{4}');"
-            createNewUserQuery = createNewUserQuery.format(max(userIdList)+1,'aa','bb',Username,Password) #let the newuser enter the firstName and lastName then create username n password. so createNewUserQuery.format(max(userIdList)+1,'first_name','last_name',Username,Password)
-            mycursor = cnx.cursor()
-            mycursor.execute(createNewUserQuery)
-            cnx.commit()
+            register()        
+        else:
+            insert_professor(Firstname,Lastname,Username,Password)
             print("Success!")
             
 
 def access():
-
     Username = input("Enter your username:")
     Password = input("Enter your password:") 
-    
     if  len(Username)>1  and len(Password)>1:
-        mycursor = cnx.cursor()
-        mycursor.execute("select username , password from uniproject.professor")
-        myresult = mycursor.fetchall()
-        loginSuccess = False
-        for row in myresult:
-            if(row[0] == Username and row[1] == Password):
+        with app.app_context():
+            professorFound = Professor.query.filter_by(userName=Username).first() 
+        if professorFound is None:
+            loginSuccess = False
+            print("Password or Username incorrect") 
+            access()  
+        else:
+           
+            if (professorFound.password == Password):
                 print("Login success")
                 print("Hi,", Username)     
-                loginSuccess = True
-        if(loginSuccess == False):
-            print("Password or Username incorrect")
-        
+                loginSuccess = True    
+            else:
+                
+                loginSuccess = False
+                print("Password or Username incorrect") 
+                access()                                 
+     
     else:
         print("Please enter a value")
-        
+        access()
             
+
+        
+   
+        
+     
+def displayMenu():
+    with app.app_context():
+          
+        menus = Menu.query.all()
+        menuList = []
+        for menu in menus:
+            print(str(menu.id) + ':'+menu.menuText)
+            menuList.append(str(menu.id))
+        userInput = input('enter an option')
+        
+        while userInput not in menuList:
+            userInput = input('enter an option')
+        return userInput        
+    
+def handleOption(userInputOption):
+    with app.app_context():
+        selectedOption =Menu.query.filter_by(id=int(userInputOption)).first()
+        
+    if selectedOption.acronym == ATTANDANCE:
+        with app.app_context():
+            #select all 
+            students = Student.query.all()
+           # random pick
+            pickedStudents = random.sample(students,k=3)
+            for stu in pickedStudents:
+                update_student_mark(1,stu.id)
+                print(stu.userName +' mark is now:' + str(stu.mark))
+          #  select one  search by
+                    
+        
+        
+    elif selectedOption.acronym == REVIEW_CHART:
+        with app.app_context():
+            #select all 
+            students = Student.query.all()
+           # random pick 
+            for stu in students: 
+                print(stu.userName +' mark is now:' + str(stu.mark))        
+        
+       
+ 
+    
+    
 def home(option=None):
     option = input("Login | Signup:")
     if option.lower() == "login":
@@ -76,92 +114,45 @@ def home(option=None):
         register()
     else:
         print("Please enter an option")
-
-
+        home()
+    userInputOption = displayMenu()
+    handleOption(userInputOption)
+home()
+#with app.app_context():
+    ##select all 
+    #course = Course.query.filter_by(id=1).first()
+   ## random pick 
+    #print(course.courseName)
+    #print(course.professor_id)
+    #print(course.professor.password)
+    #/
+    #.
         
         
 
 
 
-
-def firstPage(allMenu):
+            
  
-    for row in allMenu:
-        print(row)
    
-    userInput = input('please enter your option:')
-   
-    return userInput
-   
-with app.app_context():
-    # select all 
-    #students = Student.query.all()
-    # random pick
+#with app.app_context():
+    #select all 
+    #professors = Professor.query.all()
+    #random pick
     #pickedStudents = random.sample(students,k=3)
     #for stu in pickedStudents:
         #print(stu.userName)
         
-    # select one  search by
-    hank = Student.query.filter_by(firstName='firstName').first()
+    #select one  search by
+    #hank = Student.query.filter_by(firstName='hank').first()
     #print(hank.userName)
-    # insert new 
-    insert_student('aaa','aaa','aaa','aaa')
+    #insert new 
+    #update_professor('jnjha','11111111','1')
     #update
-    update_student('bbb',hank.id)
-    
-#home()
-#menuIdQuery = "select * from uniproject.menu"
-#cursor = cnx.cursor()
-#cursor.execute(menuIdQuery)
-    ## get all records
-#allMenuInfo = cursor.fetchall()   
-#menuIdList = []
-#menuOption = []
-#menuAcronym = []
-#for row in allMenuInfo:
-    #menuIdList.append(row[0])
-    #menuAcronym.append(row[2])
-    #menuOption.append(str(row[0])+'. ' + row[1])
+    #update_student('hank',hank.id)
+    #insert_course('English101',1)
     
    
-#userInput1 = ''  
-#while (not userInput1.isnumeric())  or (int(userInput1) not in menuIdList):
-    #if userInput1!='':
-        #print('Invaild option')
-    #userInput1 = firstPage(menuOption)
-
-#inputIndex = menuIdList.index(int(userInput1))
-#if menuAcronym[inputIndex] == ATTANDANCE:
-   ##do userInput 1 stuff
-   #print('userInput 1 has been called')
-   
-#elif menuAcronym[inputIndex] == REVIEW_CHART:
-   ##do userInput 2 stuff
-   #print('userInput 2 has been called')
-   
-#elif menuAcronym[inputIndex] == S_COURSE_SCORE:
-   ##do userInput 3 stuff
-   #print('userInput 3 has been called')
+    
  
-   
-   
-   
-   
-#cnx.close()
 
-
-
-
-
-
-#professorUsernamePasswordQuery = "select username and password from uniproject.menu"
-#cursor = cnx.cursor()
-#cursor.execute(professorUsernamePasswordQuery)
-  # get all records
-#professorInfo = cursor.fetchall()   
-#professorUsername = []
-#professorPassword = []
-#for row in professorInfo:
-    #professorUsername.append(row[3])
-    #professorPassword.append(row[4])
-#data = dict()

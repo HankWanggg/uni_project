@@ -15,11 +15,11 @@ db = SQLAlchemy(app)
 
 class Professor(db.Model):
     id = db.Column('professor_id', db.Integer, nullable=False, primary_key = True)
-    firstName = db.Column(db.String(20), nullable=False)
-    lastName = db.Column(db.String(20), nullable=False)
-    userName = db.Column(db.String(20), unique=True, nullable=False)
+    firstName = db.Column('first_name',db.String(20), nullable=False)
+    lastName = db.Column('last_name',db.String(20), nullable=False)
+    userName = db.Column('username',db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
-    courses = db.relationship('Course', backref='professor')
+    
     
     def __init__(self,firstName,lastName,userName,password):
         self.firstName = firstName
@@ -36,35 +36,49 @@ class Student(db.Model):
     lastName = db.Column('last_name',db.String(20), nullable=False)
     userName = db.Column('username',db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
+    mark = db.Column(db.Integer, nullable=False)
+   #students dont need username and password
     
     def __init__(self,firstName,lastName,userName,password):
         self.firstName = firstName
         self.lastName = lastName
         self.userName = userName
         self.password = password
+        self.mark = 0
     def __repr__(self):
         return f'<Student "{self.firstName + self.lastName}">'        
 class Course(db.Model):
     id = db.Column('course_id', db.Integer, nullable=False, primary_key=True)
-    courseName = db.Column(db.String(20), unique=True, nullable=False)
-    professor_id = db.Column(db.Integer, db.ForeignKey('professor.professor_id'), nullable=False)
-    
+    courseName = db.Column('course_name', db.String(20), unique=True, nullable=False)
+    professor_id = db.Column('professor_id',db.Integer, db.ForeignKey('professor.professor_id',), nullable=False)
+    professor = db.relationship('Professor',backref=db.backref('professor'))
     def __init__(self,courseName,professor_id):
         self.courseName = courseName
         self.professor_id = professor_id
     def __repr__(self):
         return f'<Course "{self.courseName}">'     
+class Menu(db.Model):
+    id = db.Column('id', db.Integer, nullable=False, primary_key=True)
+    menuText = db.Column('menu_text', db.String(30), unique=True, nullable=False)
+    acronym = db.Column(db.String(20), unique=True, nullable=False)
     
-def update_professor():
-    update = Student.query.filter_by(id=db.Integer).first()
-    update.userName = 'newusername'
-    update.password = 'newpassword'
+    def __init__(self,menuText,acronym):
+        self.menuText = menuText
+        self.acronym = acronym
+    def __repr__(self):
+        return f'<Menu "{self.acronym}">'     
+    # work
+def update_professor(userName,password,professorId):
+    update = Professor.query.filter_by(id=professorId).first()
+    update.userName = userName
+    update.password = password
     db.session.commit()
     
-def insert_professor(firstName,lastNme,userName,password):
-    data = Professor('firstName', 'lastName', 'userName', 'password',)     
+    # work
+def insert_professor(firstName,lastName,userName,password):
+    data = Professor(firstName, lastName, userName, password)     
     db.session.add(data)
-    db.seesion.commit()
+    db.session.commit()
     
    
    # work 
@@ -75,6 +89,13 @@ def update_student(firstName,studentId):
     db.session.commit()
     
     # work
+def update_student_mark(mark,studentId):
+    update = Student.query.filter_by(id=studentId).first()
+  
+    update.mark =update.mark + mark
+    db.session.commit()
+    
+    # work
 def insert_student(firstName,lastName,userName,password):
     data = Student(firstName, lastName, userName,password)     
     db.session.add(data)
@@ -82,13 +103,14 @@ def insert_student(firstName,lastName,userName,password):
 
 def update_course():
     update = Student.query.filter_by(id=db.Integer).first()
-    update.courseName = 'newcoursename'
+    update.courseName = courseName
     db.session.commit()
 
-def insert_course(courseName):
-    data = Course('courseName')     
-    db.session.add(data)
-    db.seesion.commit()
-
-
+def insert_course(courseName,professor_id):
     
+    data = Course(courseName,professor_id)     
+    db.session.add(data)
+    db.session.commit()
+
+
+     
