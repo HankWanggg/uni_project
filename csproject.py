@@ -9,6 +9,21 @@ cnx = connection.MySQLConnection(user='root', password='hankang0603',
                                  host='127.0.0.1',
                                  database='MySQL')
 
+def checkUserNameAndPassword(Username,Password,Password1):
+    if  Password1 != Password:
+        print("Passwords don't match, please try again")
+        return False
+    elif len(Password)<8:
+        print("Your password should be at least 8 digits, please enter aonther password")
+        return False
+ 
+    elif Professor.query.filter_by(userName=Username).first() is not None:
+        print("Username exists")
+        return False       
+    else:
+        insert_professor(Firstname,Lastname,Username,Password)
+        print("Success!")  
+        return True
 #add register ur first and last name
 def register(): 
     Firstname = input("Enter your firstname:")
@@ -17,19 +32,8 @@ def register():
     Password = input("Create password:")
     Password1 = input("Comfirm password:")    
     with app.app_context():     
-        if  Password1 != Password:
-            print("Passwords don't match, please try again")
+        if(not checkUserNameAndPassword(Username,Password,Password1)):
             register()
-        elif len(Password)<8:
-            print("Your password should be at least 8 digits, please enter aonther password")
-            register()
- 
-        elif Professor.query.filter_by(userName=Username).first() is not None:
-            print("Username exists")
-            register()        
-        else:
-            insert_professor(Firstname,Lastname,Username,Password)
-            print("Success!")
             
 
 def access():
@@ -96,9 +100,9 @@ def handleOption(userInputOption):
         
     elif selectedOption.acronym == REVIEW_CHART:
         with app.app_context():
-            #select all 
+            
             students = Student.query.all()
-           # random pick 
+         
             for stu in students: 
                 print(stu.userName +' mark is now:' + str(stu.mark))        
         
@@ -117,42 +121,6 @@ def home(option=None):
         home()
     userInputOption = displayMenu()
     handleOption(userInputOption)
-home()
-#with app.app_context():
-    ##select all 
-    #course = Course.query.filter_by(id=1).first()
-   ## random pick 
-    #print(course.courseName)
-    #print(course.professor_id)
-    #print(course.professor.password)
-    #/
-    #.
-        
-        
-
-
-
-            
- 
-   
-#with app.app_context():
-    #select all 
-    #professors = Professor.query.all()
-    #random pick
-    #pickedStudents = random.sample(students,k=3)
-    #for stu in pickedStudents:
-        #print(stu.userName)
-        
-    #select one  search by
-    #hank = Student.query.filter_by(firstName='hank').first()
-    #print(hank.userName)
-    #insert new 
-    #update_professor('jnjha','11111111','1')
-    #update
-    #update_student('hank',hank.id)
-    #insert_course('English101',1)
     
-   
-    
- 
-
+if __name__ == '__main__':
+    home()
